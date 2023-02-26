@@ -5,17 +5,33 @@ import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import Modal from 'react-modal';
 
 function App() {
 
     const [countries, setCountries] = useState([]);
     const [searchFilter, setSearchFilter] = useState('');
+    const [popupOpen, setPopupOpen] = useState(false);
     const [searchBy, setSearchBy] = useState('Name');
     const [errorMessage, setErrorMessage] = useState('');
+    const [countryDetails, setCountryDetails] = useState(null);
+
+    Modal.setAppElement('#root');
 
     useEffect(() => {
         getAllCountries()
     }, [])
+
+    function onRowClicked(event) {
+        setCountryDetails(event.data)
+        setPopupOpen(true);
+    }
+
+    function handleClosePopup() {
+        setPopupOpen(false);
+        setCountryDetails(null)
+    }
+
 
     const getAllCountries = () => {
         CountryService.getCountries()
@@ -134,11 +150,103 @@ function App() {
             { countries.length !== 0 && <div className="ag-theme-alpine" style={{height: 2000, width: 100 + "%" }}>
                 <AgGridReact
                     rowData={countries}
-                    columnDefs={columnDefs}>
-                </AgGridReact>
+                    columnDefs={columnDefs}
+                    onRowClicked={onRowClicked}
+                />
+                <PopupContent
+                    contentStyle={{width: '100%'}}
+                    isOpen={popupOpen}
+                    onClose={handleClosePopup}
+                    content="This is the content of the popup"
+                />
             </div> }
         </div>
     );
+
+    function PopupContent({ isOpen, onClose, content }) {
+        return (
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={onClose}
+                contentLabel="Country Details"
+            >
+                <h2>Country Details</h2>
+                <div>
+                    { countryDetails !== null &&
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label>Country Name: </label>
+                                        <label style={{ fontWeight: 700, marginRight: "200px", height: "100px", display: "inline-grid" }}>{countryDetails.name.common}</label>
+                                    </td>
+                                    <td>
+                                        <label>Official Name: </label>
+                                        <label style={{ fontWeight:700, height: "100px", marginRight: "200px", display: "inline-grid" }}>{countryDetails.name.official}</label>
+                                    </td>
+                                    <td>
+                                        <label>Capital: </label>
+                                        <label style={{ fontWeight:700, marginRight: "200px", height: "100px", display: "inline-grid"}}>{countryDetails.capital}</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Flag: </label>
+                                        <label style={{ fontWeight:700, height: "100px", display: "inline-grid" }}>{countryDetails.flag}</label>
+                                    </td>
+                                    <td>
+                                        <label>Region: </label>
+                                        <label style={{ fontWeight:700, height: "100px", display: "inline-grid" }}>{countryDetails.region}</label>
+                                    </td>
+                                    <td>
+                                        <label>Sub-Region: </label>
+                                        <label style={{ fontWeight:700, height: "100px", display: "inline-grid" }}>{countryDetails.subregion}</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Land-Locked: </label>
+                                        <label style={{ fontWeight:700, height: "100px", display: "inline-grid" }}>{countryDetails.landlocked ? "Yes" : "No"}</label>
+                                    </td>
+                                    <td>
+                                        <label>Borders: </label>
+                                        <label style={{ fontWeight:700, overflowWrap: "anywhere", width: "300px", height: "100px", display: "inline-grid" }}>{
+                                                countryDetails.borders != null ? countryDetails.borders.join(",") : "-"
+                                        }</label>
+                                    </td>
+                                    <td>
+                                        <label>Continents: </label>
+                                        <label style={{ fontWeight:700, overflowWrap: "anywhere", height: "100px", width: "300px", display: "inline-grid" }}>{
+                                                countryDetails.continents != null ? countryDetails.continents.join(",") : "-"
+                                        }</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Independent: </label>
+                                        <label style={{ fontWeight:700, height: "100px", display: "inline-grid" }}>{countryDetails.independent ? "Yes" : "No"}</label>
+                                    </td>
+                                    <td>
+                                        <label>Alt Spellings: </label>
+                                        <label style={{ fontWeight:700, overflowWrap: "anywhere", height: "100px", width: "300px", display: "inline-grid" }}>{
+                                            countryDetails.altSpellings != null ? countryDetails.altSpellings.join(",") : "-"
+                                        }</label>
+                                    </td>
+                                    <td>
+                                        <label>Timezones: </label>
+                                        <label style={{ fontWeight:700, overflowWrap: "anywhere", width: "300px", height: "100px", display: "inline-grid" }}>
+                                            {countryDetails.timezones != null ? countryDetails.timezones.join(",") : "-"}
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     }
+                </div>
+                <button onClick={onClose}>Close</button>
+            </Modal>
+        );
+    }
 }
 
 export default App;
