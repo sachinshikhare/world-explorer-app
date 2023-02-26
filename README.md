@@ -1,4 +1,5 @@
-# Getting Started with Create React App
+# Customer-App React app
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -68,3 +69,18 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Features
+1. List Countries 
+2. Search Countries by (Server call) 
+    - Name
+    - Full Name
+    - Currency
+    - Language
+    - Capital 
+    - Region
+    - Sub-Region
+3. Sort Countries
+4. Client side filtering
+5. View Country details 
+    -On clicking on any row in table, details of respective country will be displayed in popup. 
