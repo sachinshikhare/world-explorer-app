@@ -130,7 +130,6 @@ function App() {
     const onOptionChangeHandler = (event) => {
         console.log("User Selected Value - ", event.target.value)
         setSearchBy(event.target.value)
-        searchCountriesByFilter()
     }
 
     return (
